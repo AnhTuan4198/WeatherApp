@@ -12,10 +12,19 @@ app.use(bodyParser.urlencoded({extended:true}));
 
 app.get(homepage,function(req,res){
     https.get(apiUrl, (apiRes) => {
-        console.log(apiRes);
+        apiRes.on("data",function(data){
+            const weatherData=JSON.parse(data);
+            console.log(weatherData);
+            const temp = weatherData.main.temp;
+            const description=weatherData.weather[0].description;
+            const icon =weatherData.weather[0].icon;
+            const iconUrl =` http://openweathermap.org/img/wn/${icon}@2x.png`
+            res.write(`<h1>The temperature of Ha Noi is ${temp} degree celcius</h1>`)
+            res.write(`<img src='${iconUrl}'>`);
+            res.send();
+        })
         
     })
-    res.send("hello from Hompage");
 })
 
 
